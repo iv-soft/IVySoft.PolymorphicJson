@@ -1,0 +1,21 @@
+<Project>
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+
+    <Company>IVySoft</Company>
+    <Product>Public Libs</Product>
+    <Description>Issued by iv-soft.ru</Description>
+    <Copyright>Copyright Vadim Malyshev 2026</Copyright>
+  </PropertyGroup>
+</Project>
+
