@@ -28,28 +28,10 @@ public interface IPolymorphicJsonSerializer
     /// The resulting JSON includes a "$type" property for type identification.
     /// </summary>
     /// <param name="value">The object to serialize.</param>
-    /// <param name="options">Options to control the conversion behavior.</param>
-    /// <returns>A JSON string representation with type discriminator.</returns>
-    public string Serialize(object? value, JsonSerializerOptions? options = null);
-
-    /// <summary>
-    /// Serializes an object to a JSON string using polymorphic type handling.
-    /// The resulting JSON includes a "$type" property for type identification.
-    /// </summary>
-    /// <param name="value">The object to serialize.</param>
     /// <param name="inputType">The type of the value to convert.</param>
     /// <param name="options">Options to control the conversion behavior.</param>
     /// <returns>A JSON string representation with type discriminator.</returns>
     public string Serialize(object? value, Type inputType, JsonSerializerOptions? options = null);
-
-    /// <summary>
-    /// Writes one JSON value to the provided writer using polymorphic type handling.
-    /// The resulting JSON includes a "$type" property for type identification.
-    /// </summary>
-    /// <param name="writer">The writer to write.</param>
-    /// <param name="value">The object to serialize.</param>
-    /// <param name="options">Options to control the conversion behavior.</param>
-    public void Serialize(Utf8JsonWriter writer, object? value, JsonSerializerOptions? options = null);
 
     /// <summary>
     /// Writes one JSON value to the provided writer using polymorphic type handling.

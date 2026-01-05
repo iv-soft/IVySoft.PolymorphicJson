@@ -38,26 +38,21 @@ internal sealed class PolymorphicJsonSerializer(IEnumerable<IPolymorphicJsonCont
     }
 
     /// <inheritdoc/>
-    public string Serialize(object? value, JsonSerializerOptions? options = null)
-        => JsonSerializer.Serialize(value, this.CreateOptions(typeof(object), options));
-    /// <inheritdoc/>
     public string Serialize(object? value, Type inputType, JsonSerializerOptions? options = null)
-        => JsonSerializer.Serialize(value, inputType, this.CreateOptions(typeof(object), options));
+        => JsonSerializer.Serialize(value, inputType, this.CreateOptions(inputType, options));
     /// <inheritdoc/>
-    public void Serialize(Utf8JsonWriter writer, object? value, JsonSerializerOptions? options = null)
-        => JsonSerializer.Serialize(writer, value, this.CreateOptions(typeof(object), options));
     /// <inheritdoc/>
     public void Serialize(Utf8JsonWriter writer, object? value, Type inputType, JsonSerializerOptions? options = null)
-        => JsonSerializer.Serialize(writer, value, inputType, this.CreateOptions(typeof(object), options));
+        => JsonSerializer.Serialize(writer, value, inputType, this.CreateOptions(inputType, options));
     /// <inheritdoc/>
     public Task SerializeAsync(Stream utf8Json, object? value, Type inputType, JsonSerializerOptions? options = null, CancellationToken cancellationToken = default)
-        => JsonSerializer.SerializeAsync(utf8Json, value, inputType, this.CreateOptions(typeof(object), options), cancellationToken);
+        => JsonSerializer.SerializeAsync(utf8Json, value, inputType, this.CreateOptions(inputType, options), cancellationToken);
     /// <inheritdoc/>
     public object? Deserialize(string json, Type targetType, JsonSerializerOptions? options = null)
-        => JsonSerializer.Deserialize(json, targetType, this.CreateOptions(typeof(object), options));
+        => JsonSerializer.Deserialize(json, targetType, this.CreateOptions(targetType, options));
     /// <inheritdoc/>
     public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type targetType, JsonSerializerOptions? options = null, CancellationToken cancellationToken = default)
-        => JsonSerializer.DeserializeAsync(utf8Json, targetType, this.CreateOptions(typeof(object), options), cancellationToken);
+        => JsonSerializer.DeserializeAsync(utf8Json, targetType, this.CreateOptions(targetType, options), cancellationToken);
 
     /// <summary>
     /// Nested class that implements IJsonTypeInfoResolver to provide polymorphic
