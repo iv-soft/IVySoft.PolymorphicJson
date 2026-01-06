@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '8.0.x', '10.0.x' ]
+        dotnet-version: [ '8.0', '10.0' ]
 
     steps:
       - name: Checkout repository
@@ -20,13 +20,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
-
-      - name: Restore dependencies
-        run: dotnet restore
+          dotnet-version: ${{ matrix.dotnet-version }}.x
 
       - name: Build
-        run: dotnet build --no-restore
+        run: dotnet build --framework net${{ matrix.dotnet-version }}
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --framework net${{ matrix.dotnet-version }} --configuration Release --no-restore --no-build --verbosity normal
