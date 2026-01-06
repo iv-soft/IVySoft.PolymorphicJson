@@ -24,18 +24,10 @@ public partial class PropertyTests
 
         Assert.Equal(/*lang=json,strict*/ @"{""$type"":""class1"",""Prop1"":null}", serializer.Serialize(new Class1()));
         Assert.Equal(/*lang=json,strict*/ @"{""$type"":""class2"",""Prop2"":null}", serializer.Serialize(new Class2()));
-        Assert.Equal(
-            /*lang=json,strict*/ @"{""$type"":""class1"",""Prop1"":{""$type"":""class1"",""Prop1"":null}}",
-            serializer.Serialize(new Class1()
-            {
-                Prop1 = new Class1()
-            }));
-        Assert.Equal(
-            /*lang=json,strict*/ @"{""$type"":""class1"",""Prop1"":{""$type"":""class2"",""Prop2"":null}}",
-            serializer.Serialize(new Class1()
-            {
-                Prop1 = new Class2()
-            }));
+        Assert.Equal(/*lang=json,strict*/ @"{""$type"":""class1"",""Prop1"":{""$type"":""class1"",""Prop1"":null}}",
+            serializer.Serialize(new Class1() { Prop1 = new Class1() }));
+        Assert.Equal(/*lang=json,strict*/ @"{""$type"":""class1"",""Prop1"":{""$type"":""class2"",""Prop2"":null}}",
+            serializer.Serialize(new Class1() { Prop1 = new Class2() }));
     }
     /// <summary>
     /// Test simple property deserialize
