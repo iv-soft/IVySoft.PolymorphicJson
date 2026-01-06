@@ -67,7 +67,6 @@ Generate a JsonSerializerContext for your types:
 ```csharp
 using System.Text.Json.Serialization;
 
-[JsonSerializable(typeof(IShape))]
 [JsonSerializable(typeof(Circle))]
 [JsonSerializable(typeof(Rectangle))]
 public partial class ShapeContext : JsonSerializerContext { }
@@ -149,41 +148,65 @@ var deserialized = serializer.Deserialize(json, typeof(IShape));
 3. **Resolver Combination**: Multiple type info resolvers are combined to provide comprehensive type information.
 4. **Polymorphic Options**: The library configures `JsonPolymorphismOptions` on the JsonSerializerOptions to enable polymorphic serialization with the `$type` property.
 
-## Configuration
-
-### Custom Type Discriminator Property Name
-
-The default type discriminator property name is `$type`. To customize this, you would need to modify the `JsonPolymorphismOptions` configuration in your code.
-
-### Error Handling
-
-By default, the library uses `JsonUnknownDerivedTypeHandling.FailSerialization`, which throws an exception when encountering an unknown derived type during serialization. Deserialization with an unrecognized type discriminator will throw a `JsonException`.
-
 ## API Reference
+
+### JsonTypeIdAttribute
+
+Attribute used to specify type discriminator values for polymorphic JSON serialization.
+
+**Usage:**
+
+```csharp
+[JsonTypeId("circle")]           // String discriminator
+public sealed class Circle : IShape { }
+
+[JsonTypeId(1)]                   // Integer discriminator
+public sealed class Circle : IShape { }
+```
+
+**Constructor Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `typeDiscriminator` | `string` | The string value used to identify this type in JSON. |
+| `typeDiscriminator` | `int` | The integer value used to identify this type in JSON. |
 
 ### ServiceCollectionExtensions
 
+Provides extension methods for registering polymorphic JSON serialization services with DI.
+
 | Method | Description |
 |--------|-------------|
-| `AddPolymorphicJsonSerializer()` | Registers the polymorphic JSON serializer services. |
-| `AddJsonSerializerContext<TContext>()` | Registers a JsonSerializerContext type. |
-| `AddJsonSerializerContext(Type)` | Registers a JsonSerializerContext by type. |
+| `AddPolymorphicJsonSerializer()` | Registers the polymorphic JSON serializer services in the service collection. Sets up infrastructure for polymorphic serialization. |
+| `AddJsonSerializerContext<TSerializerContext>(IServiceCollection)` | Registers a `JsonSerializerContext`-derived type in the service collection for use in polymorphic JSON serialization. |
+| `AddJsonSerializerContext(IServiceCollection, Type)` | Registers a `JsonSerializerContext` by Type instance in the service collection. |
 
 ### IPolymorphicJsonSerializer
 
+Defines the contract for polymorphic JSON serialization without generic type constraints. Provides methods for serializing and deserializing objects that may have derived types, using a type discriminator property (`$type`) in the JSON representation.
+
 | Method | Description |
 |--------|-------------|
-| `CreateOptions(Type, JsonSerializerOptions?)` | Creates options for polymorphic serialization of a specific type. |
-| `Serialize(object)` | Serializes an object to JSON with type discriminator. |
-| `Deserialize(string, Type)` | Deserializes JSON to an object of the specified type. |
+| `CreateOptions(Type baseType, JsonSerializerOptions? baseOptions)` | Creates a `JsonSerializerOptions` instance configured for polymorphic serialization of the specified base type. |
+| `Serialize(object? value, Type inputType, JsonSerializerOptions? options)` | Serializes an object to a JSON string using polymorphic type handling. Returns JSON with `$type` property. |
+| `Serialize(Utf8JsonWriter writer, object? value, Type inputType, JsonSerializerOptions? options)` | Writes one JSON value to the provided writer using polymorphic type handling. |
+| `SerializeAsync(Stream utf8Json, object? value, Type inputType, JsonSerializerOptions? options, CancellationToken cancellationToken)` | Asynchronously writes one JSON value to the provided stream using polymorphic type handling. |
+| `Deserialize(string json, Type targetType, JsonSerializerOptions? options)` | Deserializes a JSON string to an object of the specified target type using the type discriminator. |
+| `DeserializeAsync(Stream utf8Json, Type targetType, JsonSerializerOptions? options, CancellationToken cancellationToken)` | Asynchronously deserializes a JSON stream to an object of the specified target type. |
 
 ### IPolymorphicJsonSerializer<TBaseType>
 
+Defines a strongly-typed contract for polymorphic JSON serialization for a specific base type. Provides type-safe serialization and deserialization, enabling compile-time type safety while maintaining polymorphic behavior.
+
 | Method | Description |
 |--------|-------------|
-| `CreateOptions(JsonSerializerOptions?)` | Creates options for polymorphic serialization of TBaseType. |
-| `Serialize(TBaseType)` | Serializes a TBaseType instance to JSON. |
-| `Deserialize(string)` | Deserializes JSON to a TBaseType instance. |
+| `CreateOptions(JsonSerializerOptions? baseOptions)` | Creates a `JsonSerializerOptions` instance configured for polymorphic serialization of TBaseType. |
+| `Serialize(TBaseType? value, JsonSerializerOptions? options)` | Serializes an instance of TBaseType or its derived types to a JSON string with `$type` property. |
+| `Serialize(Utf8JsonWriter writer, TBaseType? value, JsonSerializerOptions? options)` | Writes one JSON value to the provided writer using polymorphic type handling. |
+| `SerializeAsync(Stream utf8Json, TBaseType? value, JsonSerializerOptions? options, CancellationToken cancellationToken)` | Asynchronously writes one JSON value to the provided stream using polymorphic type handling. |
+| `Deserialize(string json, JsonSerializerOptions? options)` | Deserializes a JSON string to an instance of TBaseType or its derived types. |
+| `DeserializeAsync(Stream utf8Json, JsonSerializerOptions? options, CancellationToken cancellationToken)` | Asynchronously deserializes a JSON stream to an instance of TBaseType or its derived types. |
+| `DeserializeAsyncEnumerable(Stream utf8Json, JsonSerializerOptions? options, CancellationToken cancellationToken)` | Wraps UTF-8 encoded text into an `IAsyncEnumerable<TValue>` for streaming deserialization of root-level JSON arrays. |
 
 ## License
 
