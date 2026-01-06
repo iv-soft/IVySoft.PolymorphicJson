@@ -194,7 +194,7 @@ Defines the contract for polymorphic JSON serialization without generic type con
 | `Deserialize(string json, Type targetType, JsonSerializerOptions? options)` | Deserializes a JSON string to an object of the specified target type using the type discriminator. |
 | `DeserializeAsync(Stream utf8Json, Type targetType, JsonSerializerOptions? options, CancellationToken cancellationToken)` | Asynchronously deserializes a JSON stream to an object of the specified target type. |
 
-### IPolymorphicJsonSerializer<TBaseType>
+### IPolymorphicJsonSerializer\<TBaseType\>
 
 Defines a strongly-typed contract for polymorphic JSON serialization for a specific base type. Provides type-safe serialization and deserialization, enabling compile-time type safety while maintaining polymorphic behavior.
 
